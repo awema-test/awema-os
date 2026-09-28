@@ -1,0 +1,449 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>AWEMA OS — Portfolio public du projet</title>
+<meta name="description" content="Portfolio public du projet AWEMA OS : ce que le système d'exploitation d'agence digitale assistée par IA livre réellement — parcours, agents, documentation. Données réelles, zéro fiction. Open source AGPL-3.0, auto-hébergé.">
+<!--
+  PORTFOLIO PUBLIC — AWEMA OS
+  Conventions respectées : docs/04-charte-graphique.md (thème Ruche), docs/03-conventions.md, index.html.
+  Contraintes tenues : AUCUNE ressource externe (pas de CDN, pas de police distante, pas d'image distante,
+  pas de script tiers) — la page fonctionne hors ligne. AUCUN script embarqué : rendu 100 % statique.
+  AUCUN chiffre, nom de client, logo, témoignage ni prix publié : rien n'est affiché comme un fait
+  qui ne soit pas vérifiable dans la documentation publique du dépôt (liens sortants = fichiers du dépôt).
+  Les manques à combler par le propriétaire sont marqués en commentaires HTML « À VALIDER PAR LE PROPRIÉTAIRE ».
+-->
+<style>
+  /* ——— Charte AWEMA (docs/04-charte-graphique.md) — thème Ruche ———
+     Noir ruche dominant · Or #D4AF37 (CTA/premium) · Miel #FFC94D (liens/accents) · Ambre #EDA914 (dégradés)
+     Texte ivoire #F1EDE2 · secondaire #B3AA92 · crème #F7F4EA.
+     Typographies de la charte : Montserrat (titres) + Poppins (corps). Aucun chargement distant :
+     les familles sont déclarées localement, avec repli système si elles ne sont pas installées. */
+  :root{
+    --nuit:#222222;--nuit-2:#1B1B1B;--nuit-3:#161616;
+    --or:#D4AF37;--or-2:#E8C96A;--miel:#FFC94D;--ambre:#EDA914;
+    --creme:#F7F4EA;--tx:#F1EDE2;--muted:#B3AA92;--muted2:#877F69;
+    --card:rgba(247,244,234,.04);--bord:rgba(247,244,234,.10);--bord2:rgba(247,244,234,.22);
+    --ok:#34E5C4;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{font-family:Poppins,"Poppins",system-ui,"Segoe UI",Roboto,sans-serif;color:var(--tx);line-height:1.65;background:var(--nuit-3);overflow-x:hidden}
+  h1,h2,h3,h4,.disp{font-family:Montserrat,"Montserrat",system-ui,"Segoe UI",sans-serif;letter-spacing:-.02em}
+  a{color:inherit;text-decoration:none}
+  ::selection{background:rgba(255,201,77,.35)}
+  a:focus-visible,button:focus-visible{outline:2px solid var(--miel);outline-offset:3px;border-radius:6px}
+  .wrap{max-width:1140px;margin:0 auto;padding:0 24px}
+  .or{color:var(--or)}.c{color:var(--miel)}
+
+  /* fond + tissage kente (mêmes signatures que l'accueil) */
+  .fond{position:fixed;inset:0;z-index:-2;background:
+    radial-gradient(1100px 640px at 70% -10%,rgba(255,201,77,.13),transparent 60%),
+    radial-gradient(900px 560px at 8% 30%,rgba(34,34,34,.9),transparent 70%),
+    var(--nuit-3)}
+  .tissage{position:fixed;inset:0;z-index:-1;opacity:.05;pointer-events:none;background-image:
+    repeating-linear-gradient(45deg,var(--creme) 0 1px,transparent 1px 26px),
+    repeating-linear-gradient(-45deg,var(--creme) 0 1px,transparent 1px 26px);
+    mask:radial-gradient(1000px 700px at 50% 0%,#000,transparent 80%);
+    -webkit-mask:radial-gradient(1000px 700px at 50% 0%,#000,transparent 80%)}
+  .kente{height:3px;border:0;background:linear-gradient(90deg,
+    var(--or) 0 18%,var(--miel) 18% 30%,rgba(247,244,234,.25) 30% 34%,
+    transparent 34% 66%,rgba(247,244,234,.25) 66% 70%,var(--miel) 70% 82%,var(--or) 82% 100%);
+    max-width:280px;margin:0 auto;border-radius:3px;opacity:.85}
+
+  /* nav */
+  nav.top{position:sticky;top:0;z-index:50;backdrop-filter:saturate(140%) blur(14px);background:rgba(22,22,22,.72);border-bottom:1px solid var(--bord)}
+  nav.top .in{display:flex;align-items:center;gap:14px;height:66px}
+  .brand{display:flex;align-items:center;gap:11px;font-weight:800;font-family:Montserrat,"Montserrat",system-ui,sans-serif;font-size:16.5px}
+  .brand .lg{width:37px;height:37px;border-radius:11px;display:grid;place-items:center;color:var(--nuit);font-size:16px;background:linear-gradient(150deg,var(--or-2),var(--or));box-shadow:0 8px 20px -8px rgba(212,175,55,.55)}
+  nav.top .links{display:flex;gap:4px;margin-left:16px}
+  nav.top .links a{padding:8px 13px;border-radius:10px;font-size:13.5px;color:var(--muted);transition:.16s}
+  nav.top .links a:hover{color:var(--tx);background:rgba(247,244,234,.06)}
+  nav.top .links a[aria-current]{color:var(--miel)}
+  nav.top .sp{flex:1}
+  .btn{display:inline-flex;align-items:center;gap:8px;border:0;border-radius:12px;font:inherit;font-weight:600;font-size:13.5px;padding:10px 17px;cursor:pointer;transition:.18s;white-space:nowrap}
+  .btn.or2{background:linear-gradient(150deg,var(--or-2),var(--or));color:var(--nuit);font-weight:700;box-shadow:0 12px 26px -12px rgba(212,175,55,.55)}
+  .btn.or2:hover{transform:translateY(-2px);box-shadow:0 18px 34px -12px rgba(212,175,55,.7)}
+  .btn.gh{background:transparent;border:1px solid var(--bord2);color:var(--tx)}
+  .btn.gh:hover{border-color:var(--miel);color:#fff;background:rgba(255,201,77,.08)}
+  .btn.lg{padding:13px 22px;font-size:15px;border-radius:14px}
+
+  /* hero */
+  .hero{padding:74px 0 26px}
+  .badge{display:inline-flex;align-items:center;gap:8px;font-size:12.5px;color:var(--miel);border:1px solid rgba(255,201,77,.4);background:rgba(255,201,77,.09);padding:6px 14px;border-radius:30px;font-weight:600}
+  .badge .pt{width:8px;height:8px;border-radius:50%;background:var(--miel)}
+  .hero h1{font-size:clamp(31px,4vw,45px);font-weight:900;line-height:1.12;margin-top:20px;max-width:900px}
+  .hero h1 .souligne{background:linear-gradient(180deg,transparent 66%,rgba(212,175,55,.30) 66%,rgba(212,175,55,.30) 92%,transparent 92%);-webkit-box-decoration-break:clone;box-decoration-break:clone;padding:0 3px}
+  .hero .lead{color:var(--muted);font-size:clamp(15px,1.6vw,17.5px);max-width:680px;margin-top:18px}
+  .hero .lead b{color:var(--tx)}
+  .hero .cta{display:flex;gap:13px;flex-wrap:wrap;margin-top:28px}
+  .hero .micro{margin-top:15px;font-size:12.8px;color:var(--muted2)}
+  .hero .micro b{color:var(--muted)}
+
+  /* sections */
+  section{padding:62px 0;position:relative}
+  .eyebrow{font-size:12.5px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--miel)}
+  .h2{font-size:clamp(26px,3.8vw,38px);font-weight:800;margin-top:10px}
+  .sub{color:var(--muted);margin-top:12px;max-width:680px;font-size:15.5px}
+  .sub a{color:var(--miel);text-decoration:underline}
+
+  /* cartes de réalisations */
+  .cards{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:36px}
+  .card{background:var(--card);border:1px solid var(--bord);border-radius:20px;padding:24px;transition:.22s;position:relative;overflow:hidden;display:flex;flex-direction:column}
+  .card:hover{transform:translateY(-4px);border-color:rgba(255,201,77,.4)}
+  .card.big{grid-column:span 2}
+  .card .ic{width:46px;height:46px;border-radius:14px;display:grid;place-items:center;font-size:21px;background:rgba(255,201,77,.13);border:1px solid rgba(255,201,77,.25)}
+  .card h3{font-size:17.5px;margin-top:14px;font-weight:800}
+  .card .role{font-size:11px;color:var(--or);font-weight:700;text-transform:uppercase;letter-spacing:.08em;margin-top:4px}
+  .card p{color:var(--muted);font-size:13.4px;margin-top:9px}
+  .card .src{margin-top:auto;padding-top:16px;font-size:12.5px}
+  .card .src a{color:var(--miel);text-decoration:underline;word-break:break-word}
+  .card .src span{color:var(--muted2)}
+
+  /* équipe d'agents */
+  .agents{display:grid;grid-template-columns:repeat(5,1fr);gap:14px;margin-top:34px}
+  .agent{background:var(--card);border:1px solid var(--bord);border-radius:18px;padding:20px 18px;transition:.22s}
+  .agent:hover{transform:translateY(-4px);border-color:rgba(255,201,77,.4)}
+  .agent .av{width:42px;height:42px;border-radius:13px;display:grid;place-items:center;font-size:19px;background:rgba(255,201,77,.13);border:1px solid rgba(255,201,77,.25)}
+  .agent h3{font-size:15.5px;margin-top:12px}
+  .agent .role{font-size:10.5px;color:var(--or);font-weight:700;text-transform:uppercase;letter-spacing:.08em;margin-top:3px}
+  .agent p{color:var(--muted);font-size:12.7px;margin-top:8px}
+  .devise{margin-top:28px;text-align:center;font-family:Montserrat,"Montserrat",system-ui,sans-serif;font-weight:800;font-size:clamp(17px,2.4vw,22px)}
+  .devise .or{font-style:italic}
+
+  /* liste de liens de preuve */
+  .preuves{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;margin-top:30px}
+  .preuve{border:1px solid var(--bord);border-radius:16px;padding:18px 20px;background:var(--card);transition:.2s}
+  .preuve:hover{border-color:var(--bord2);transform:translateY(-3px)}
+  .preuve b{font-family:Montserrat,"Montserrat",system-ui,sans-serif;font-size:14.5px;display:block}
+  .preuve span{color:var(--muted);font-size:13px;display:block;margin-top:5px}
+  .preuve .f{color:var(--miel);font-size:12.5px;margin-top:9px;display:block;text-decoration:underline;word-break:break-word}
+
+  /* ADN */
+  .adn{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-top:34px}
+  .pilier{border-left:2px solid var(--or);padding:4px 0 4px 18px}
+  .pilier h3{font-size:15.5px}
+  .pilier p{color:var(--muted);font-size:13px;margin-top:6px}
+  .pilier a{color:var(--miel);text-decoration:underline}
+
+  /* honnêteté */
+  .honnete{background:linear-gradient(150deg,rgba(255,201,77,.08),rgba(27,27,27,.5));border:1px solid rgba(255,201,77,.28);border-radius:24px;padding:38px;margin-top:8px}
+  .honnete h2{font-size:clamp(22px,3vw,30px);font-weight:800}
+  .honnete ul{list-style:none;margin-top:18px;display:grid;gap:12px}
+  .honnete li{display:flex;gap:11px;align-items:flex-start;font-size:14px;color:var(--muted)}
+  .honnete li b{color:var(--tx)}
+  .honnete li .ck{color:var(--or);font-weight:800}
+
+  /* lancement */
+  .beta{background:linear-gradient(150deg,rgba(255,201,77,.10),rgba(34,34,34,.55));border:1px solid rgba(255,201,77,.3);border-radius:26px;padding:42px;display:flex;gap:30px;align-items:center;flex-wrap:wrap;margin-top:10px}
+  .beta .l{flex:1;min-width:280px}
+  .beta h2{font-size:clamp(23px,3.2vw,32px);font-weight:800}
+  .beta p{color:var(--muted);font-size:14.5px;margin-top:12px}
+  .beta .r{display:flex;flex-direction:column;gap:11px;min-width:240px}
+
+  footer{border-top:1px solid var(--bord);padding:40px 0;color:var(--muted);font-size:13px;margin-top:30px}
+  footer .row{display:flex;gap:18px;flex-wrap:wrap;align-items:center}
+  footer a{color:var(--muted)}footer a:hover{color:var(--tx)}
+  footer .lic{width:100%;margin-top:10px;color:var(--muted2);font-size:12px}
+  footer .src{width:100%;margin-top:10px;color:var(--muted2);font-size:12px}
+
+  @media(max-width:1040px){.agents{grid-template-columns:repeat(3,1fr)}}
+  @media(max-width:900px){.cards,.preuves{grid-template-columns:1fr 1fr}.card.big{grid-column:span 2}
+    .agents,.adn{grid-template-columns:1fr 1fr}nav.top .links{display:none}}
+  @media(max-width:560px){.cards,.preuves,.agents,.adn{grid-template-columns:1fr}.card.big{grid-column:span 1}
+    nav.top .btn.gh{display:none}nav.top .btn{padding:9px 12px;font-size:12.5px}.honnete,.beta{padding:26px}}
+</style>
+</head>
+<body>
+<div class="fond"></div>
+<div class="tissage"></div>
+
+<nav class="top">
+  <div class="wrap in">
+    <a class="brand" href="index.html"><span class="lg">A</span><span>AWEMA</span></a>
+    <div class="links">
+      <a href="#realisations">Réalisations</a>
+      <a href="#agents">Agents IA</a>
+      <a href="#preuves">Sources</a>
+      <a href="#adn">Notre ADN</a>
+      <a href="#limites">Ce que nous ne prétendons pas</a>
+    </div>
+    <div class="sp"></div>
+    <a class="btn gh" href="index.html">Accueil</a>
+    <a class="btn or2" href="liste-attente.html">Liste d'attente →</a>
+  </div>
+</nav>
+
+<header class="hero">
+  <div class="wrap">
+    <span class="badge"><span class="pt"></span> Open source AGPL-3.0 · auto-hébergé · portfolio du projet</span>
+    <h1>Portfolio public d'<span class="souligne">AWEMA OS</span> —<br>ce que le système livre réellement</h1>
+    <p class="lead">AWEMA OS est le système d'exploitation d'une <b>agence digitale assistée par IA</b> :
+      un <b>Kernel</b> de concepts universels, sans logique métier, prolongé par des <b>modules</b> métier —
+      et une <b>équipe d'agents IA</b> qui observe, analyse et propose. Cette page recense les réalisations
+      <b>vérifiables dans le dépôt</b> : chaque carte renvoie au fichier réel qui la prouve.</p>
+    <div class="cta">
+      <a class="btn or2 lg" href="#realisations">Voir les réalisations vérifiables</a>
+      <a class="btn gh lg" href="tutoriel.html">Guide pas à pas</a>
+    </div>
+    <p class="micro">💡 <b>Règle de la maison :</b> aucune donnée non prouvée. Ce portfolio ne publie ni chiffre
+      client, ni logo, ni témoignage, ni tarif. Ce qui n'est pas encore validé par le propriétaire est
+      signalé en page <a href="#limites" style="color:var(--miel);text-decoration:underline">« ce que nous ne prétendons pas »</a>.</p>
+  </div>
+</header>
+
+<hr class="kente">
+
+<section id="realisations" style="padding-top:54px">
+  <div class="wrap">
+    <div class="eyebrow">Réalisations vérifiables</div>
+    <div class="h2">Le <span class="or">produit</span>, pas la promesse</div>
+    <p class="sub">Chaque élément ci-dessous existe dans le dépôt public et est joignable par un lien direct.
+      Aucune capture d'écran embellie, aucun chiffre d'usage : le fichier fait foi.</p>
+
+    <div class="cards">
+      <div class="card big">
+        <div class="ic">🧭</div>
+        <h3>Un Kernel universel + des modules métier</h3>
+        <div class="role">Architecture</div>
+        <p>Le socle stable (concepts, principes, agents, données, gouvernance, ADR) est séparé des modules
+          métier. Un seul module est officiel : <b>Marketing</b>. Séparer la méthode des livrables clients
+          évite que chaque mission réinvente le cadre.</p>
+        <div class="src"><span>Source :</span> <a href="docs/FOUNDATION/README.md">docs/FOUNDATION/README.md</a>
+          · <a href="docs/01-agence.md">docs/01-agence.md</a></div>
+      </div>
+
+      <div class="card">
+        <div class="ic">🖥️</div>
+        <h3>Cockpit / dashboard opérateur</h3>
+        <div class="role">Interface</div>
+        <p>Un tableau de bord pour piloter la présence en ligne : audience, réactions, cadence,
+          meilleurs créneaux, commentaires à traiter.</p>
+        <div class="src"><span>Source :</span> <a href="outils/dashboard/index.html">outils/dashboard/index.html</a></div>
+      </div>
+
+      <div class="card">
+        <div class="ic">⚡</div>
+        <h3>Automatisation GitHub Actions</h3>
+        <div class="role">Industrialisation</div>
+        <p>La synchronisation, l'analyse et la génération du registre tournent dans le dépôt, sans serveur
+          à louer : l'outil s'auto-héberge sur l'espace GitHub de celui qui le forke.</p>
+        <div class="src"><span>Source :</span> <a href="docs/18-sauvegarde-continuite.md">docs/18-sauvegarde-continuite.md</a>
+          · <a href="AGENTS.md">AGENTS.md</a></div>
+      </div>
+
+      <div class="card">
+        <div class="ic">🧪</div>
+        <h3>Harnais anti-régression</h3>
+        <div class="role">Qualité</div>
+        <p>Une suite de tests automatisés couvre les scripts du produit. Elle doit rester verte avant
+          chaque livraison : c'est la définition du « fini » de l'équipe.</p>
+        <div class="src"><span>Source :</span> <a href="tests/tests.html">tests/</a>
+          · <a href="docs/03-conventions.md">docs/03-conventions.md</a></div>
+      </div>
+
+      <div class="card">
+        <div class="ic">🤖</div>
+        <h3>Opérateur en langage naturel <code>/awema</code></h3>
+        <div class="role">Assistance</div>
+        <p>Les connexions plateformes se pilotent en langage naturel — « connecte TikTok », « fais tourner
+          le token Meta », « statut des connexions » — sans demander deux fois ce qui est déjà connu.</p>
+        <div class="src"><span>Source :</span> <a href="docs/08-agent-awema.md">docs/08-agent-awema.md</a>
+          · <a href="connect-ia.html">connect-ia.html</a></div>
+      </div>
+
+      <div class="card big">
+        <div class="ic">🗂️</div>
+        <h3>Des parcours guidés de bout en bout</h3>
+        <div class="role">Parcours</div>
+        <p>Mise en route, personnalisation à la marque, création d'une fiche client, connexion des réseaux,
+          demande d'accès API : chaque étape a son écran dédié, pour un usage sans compétence technique
+          préalable.</p>
+        <div class="src"><span>Sources :</span> <a href="tutoriel.html">tutoriel.html</a>
+          · <a href="setup.html">setup.html</a>
+          · <a href="configuration.html">configuration.html</a>
+          · <a href="nouveau-client.html">nouveau-client.html</a>
+          · <a href="onboarding.html">onboarding.html</a></div>
+      </div>
+
+      <div class="card">
+        <div class="ic">🔐</div>
+        <h3>Sécurité &amp; hébergement des données</h3>
+        <div class="role">Confiance</div>
+        <p>Une note de sécurité, une politique de données et un guide d'auto-hébergement documentent où
+          vivent les données et qui peut y accéder.</p>
+        <div class="src"><span>Source :</span> <a href="SECURITY.md">SECURITY.md</a>
+          · <a href="docs/13-securite-donnees.md">docs/13-securite-donnees.md</a>
+          · <a href="docs/09-auto-hebergement.md">docs/09-auto-hebergement.md</a></div>
+      </div>
+    </div>
+
+    <!-- À VALIDER PAR LE PROPRIÉTAIRE : ajouter ici les réalisations clients nommées (nom du client, secteur,
+         périmètre confié, résultats mesurés et lien vers la source). Rien n'est publié tant que la preuve
+         (rapport, capture de métrique, accord écrit du client) n'est pas fournie. Aucun nom ni chiffre client
+         n'a été inventé dans cette version. -->
+    <!-- À VALIDER PAR LE PROPRIÉTAIRE : logo de marque (fichier local à déposer dans le dépôt) et visuels
+         d'interface. Cette version n'embarque aucune image afin de rester 100 % hors ligne. -->
+  </div>
+</section>
+
+<section id="agents" style="padding-top:24px">
+  <div class="wrap">
+    <div class="eyebrow">La différence AWEMA</div>
+    <div class="h2">Une <span class="or">équipe d'agents IA</span> qui propose — l'humain décide</div>
+    <p class="sub">Ce ne sont pas des chatbots : des agents spécialisés, chacun avec un métier, qui produisent
+      des propositions sourcées. Une action engageante exige une validation humaine explicite.</p>
+
+    <div class="agents">
+      <div class="agent"><div class="av">🔎</div><h3>L'Analyste</h3><div class="role">Comprend</div>
+        <p>Explique pourquoi un contenu a marché et ce qu'il faut reproduire, preuve chiffrée à l'appui.</p></div>
+      <div class="agent"><div class="av">🧭</div><h3>Le Stratège</h3><div class="role">Planifie</div>
+        <p>Cadence, meilleurs créneaux, plan éditorial de la semaine.</p></div>
+      <div class="agent"><div class="av">✍️</div><h3>Le Créatif</h3><div class="role">Produit</div>
+        <p>Accroches, scripts et prompts, fidèles au ton de chaque marque.</p></div>
+      <div class="agent"><div class="av">🪞</div><h3>La Rétrospective</h3><div class="role">Apprend</div>
+        <p>Compare les propositions passées aux résultats réels et en tire des leçons.</p></div>
+      <div class="agent"><div class="av">📡</div><h3>La Proactivité</h3><div class="role">Surveille</div>
+        <p>Détecte les signaux utiles et propose une action avant qu'on la demande.</p></div>
+    </div>
+    <div class="devise">L'IA <span class="c">travaille</span>. L'humain <span class="or">décide</span>.</div>
+    <p class="sub" style="margin-top:14px">Contrat des agents documenté dans le socle :
+      <a href="docs/FOUNDATION/05-AGENT_MODEL.md">docs/FOUNDATION/05-AGENT_MODEL.md</a>.</p>
+  </div>
+</section>
+
+<section id="preuves" style="padding-top:24px">
+  <div class="wrap">
+    <div class="eyebrow">Sources</div>
+    <div class="h2">Les documents qui <span class="or">engagent</span> le projet</div>
+    <p class="sub">Produit, offre, sécurité, continuité : tout ce qui structure AWEMA OS est public et versionné.</p>
+
+    <div class="preuves">
+      <a class="preuve" href="docs/PRD-AWEMA.md"><b>PRD — définition du produit</b>
+        <span>Le périmètre fonctionnel de référence et ses limites.</span><span class="f">docs/PRD-AWEMA.md</span></a>
+      <a class="preuve" href="docs/ROADMAP.md"><b>Roadmap</b>
+        <span>Ce qui est fait, ce qui vient, dans quel ordre.</span><span class="f">docs/ROADMAP.md</span></a>
+      <a class="preuve" href="docs/15-offre.md"><b>Offre</b>
+        <span>La forme commerciale du produit.</span><span class="f">docs/15-offre.md</span></a>
+      <a class="preuve" href="docs/11-programme-beta.md"><b>Programme bêta</b>
+        <span>Le cadre des premiers testeurs.</span><span class="f">docs/11-programme-beta.md</span></a>
+      <a class="preuve" href="docs/03-conventions.md"><b>Conventions &amp; qualité</b>
+        <span>Nommage, formats, définition du « fini ».</span><span class="f">docs/03-conventions.md</span></a>
+      <a class="preuve" href="docs/04-charte-graphique.md"><b>Charte graphique</b>
+        <span>Thème Ruche : noir, or, miel, ambre. Cette page l'applique.</span><span class="f">docs/04-charte-graphique.md</span></a>
+      <a class="preuve" href="docs/13-securite-donnees.md"><b>Sécurité des données</b>
+        <span>Frontières, droits et précautions.</span><span class="f">docs/13-securite-donnees.md</span></a>
+      <a class="preuve" href="docs/18-sauvegarde-continuite.md"><b>Sauvegarde &amp; continuité</b>
+        <span>Sauvegarder, restaurer, ne pas perdre l'historique.</span><span class="f">docs/18-sauvegarde-continuite.md</span></a>
+      <a class="preuve" href="docs/RECETTE-MANUELLE.md"><b>Recette manuelle</b>
+        <span>La procédure de vérification avant mise en service.</span><span class="f">docs/RECETTE-MANUELLE.md</span></a>
+      <a class="preuve" href="docs/00-INDEX.md"><b>Index de la documentation</b>
+        <span>Porte d'entrée de tous les guides du dépôt.</span><span class="f">docs/00-INDEX.md</span></a>
+    </div>
+  </div>
+</section>
+
+<section id="plateformes" style="padding-top:24px">
+  <div class="wrap">
+    <div class="eyebrow">Parcours plateformes</div>
+    <div class="h2">Chaque réseau a son <span class="or">guide de connexion</span></div>
+    <p class="sub">Les connecteurs et leurs écrans d'accompagnement existent dans le dépôt : Facebook,
+      Instagram, TikTok, YouTube, LinkedIn et WhatsApp.</p>
+    <div class="preuves">
+      <a class="preuve" href="connect-facebook.html"><b>Facebook</b><span>Connexion de la page et de ses données.</span><span class="f">connect-facebook.html</span></a>
+      <a class="preuve" href="connect-tiktok.html"><b>TikTok</b><span>Raccordement du compte et du token.</span><span class="f">connect-tiktok.html</span></a>
+      <a class="preuve" href="connect-youtube.html"><b>YouTube</b><span>Connexion de la chaîne et de son audience.</span><span class="f">connect-youtube.html</span></a>
+      <a class="preuve" href="connect-linkedin.html"><b>LinkedIn</b><span>Raccordement de la page professionnelle.</span><span class="f">connect-linkedin.html</span></a>
+      <a class="preuve" href="connect-whatsapp.html"><b>WhatsApp</b><span>Canal de conversation et tunnel d'entrée.</span><span class="f">connect-whatsapp.html</span></a>
+      <a class="preuve" href="docs/05-connecter-reseaux.md"><b>Procédure commune</b><span>La méthode de connexion, réseau par réseau.</span><span class="f">docs/05-connecter-reseaux.md</span></a>
+    </div>
+    <p class="sub" style="font-size:13px;color:var(--muted2)">Instagram est raccordé via Facebook dans le produit ;
+      voir <a href="docs/06-obtenir-token-meta.md" style="color:var(--miel);text-decoration:underline">docs/06-obtenir-token-meta.md</a>.</p>
+  </div>
+</section>
+
+<section id="adn" style="padding-top:24px">
+  <div class="wrap">
+    <div class="eyebrow">Notre ADN</div>
+    <div class="h2">Des principes <span class="or">non négociables</span></div>
+    <div class="adn">
+      <div class="pilier"><h3>Données réelles, zéro fiction</h3>
+        <p>Aucun chiffre inventé, nulle part. Ce qui n'est pas connecté s'affiche « à connecter », pas un faux graphique.</p></div>
+      <div class="pilier"><h3>Chez toi, pas chez nous</h3>
+        <p>Auto-hébergé sur ton espace : tes données et tes clés restent dans ton périmètre.</p></div>
+      <div class="pilier"><h3>Open source (AGPL-3.0)</h3>
+        <p>Le code est ouvert et le restera : personne ne peut fermer un dérivé derrière un serveur.
+          <a href="LICENSE">Licence</a></p></div>
+      <div class="pilier"><h3>Propose, ne décide pas</h3>
+        <p>Les sorties d'agents sont des propositions sourcées ; une action engageante exige une validation humaine.
+          <a href="AGENTS.md">Règles du projet</a></p></div>
+    </div>
+  </div>
+</section>
+
+<section id="limites" style="padding-top:24px">
+  <div class="wrap">
+    <div class="honnete">
+      <div class="eyebrow">Honnêteté du portfolio</div>
+      <h2 style="margin-top:10px">Ce que cette page <span class="or">ne prétend pas</span></h2>
+      <ul>
+        <li><span class="ck">•</span><span><b>Aucun résultat client n'est publié ici.</b> Ce portfolio décrit le
+          produit et sa documentation ; il ne revendique ni croissance d'audience, ni retombées commerciales.</span></li>
+        <li><span class="ck">•</span><span><b>Aucun logo, aucun nom de client, aucun témoignage.</b> Leur
+          publication exige l'accord des personnes concernées, il n'a pas été demandé à ce stade.</span></li>
+        <li><span class="ck">•</span><span><b>Aucun tarif.</b> Les conditions commerciales figurent dans la
+          documentation de l'offre, à jour, et non dans une vitrine figée.</span></li>
+        <li><span class="ck">•</span><span><b>Aucune métrique d'usage du produit</b> n'est affichée : les chiffres
+          réels de l'instance sont injectés par le registre généré, pas recopiés ici où ils deviendraient faux.</span></li>
+        <li><span class="ck">•</span><span><b>Les parcours métiers contrôlés</b> relèvent de la recette
+          (<a href="docs/RECETTE-MANUELLE.md" style="color:var(--miel);text-decoration:underline">docs/RECETTE-MANUELLE.md</a>) ;
+          cette page ne remplace pas un rapport de test exécuté.</span></li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section id="lancer" style="padding-top:30px">
+  <div class="wrap">
+    <div class="beta">
+      <div class="l">
+        <div class="eyebrow">Utiliser AWEMA OS</div>
+        <h2 style="margin-top:10px">Le tester soi-même, <span class="or">sans rien installer</span></h2>
+        <p>Le dépôt est public et la licence est ouverte : tu peux lire le code, suivre le guide pas à pas et
+          faire tourner ta propre instance. L'accès accompagné, lui, ouvre sur abonnement — la liste d'attente
+          tient le rang des intéressés.</p>
+      </div>
+      <div class="r">
+        <a class="btn or2 lg" href="tutoriel.html">Suivre le guide pas à pas</a>
+        <a class="btn gh lg" href="liste-attente.html">Rejoindre la liste d'attente</a>
+        <a class="btn gh lg" href="setup.html">Forker &amp; personnaliser</a>
+      </div>
+    </div>
+
+    <!-- À VALIDER PAR LE PROPRIÉTAIRE : témoignages clients cités (nom, fonction, entreprise, texte relu et
+         autorisé par écrit). Emplacement réservé : aucun témoignage n'est affiché dans cette version. -->
+    <!-- À VALIDER PAR LE PROPRIÉTAIRE : indicateurs d'usage publics (nombre d'instances, volume de contenus,
+         audience agrégée). À publier uniquement depuis le registre généré par le dépôt, avec une date de
+         relevé visible, et après accord explicite. -->
+  </div>
+</section>
+
+<footer>
+  <div class="wrap row">
+    <a class="brand" href="index.html"><span class="lg">A</span><span>AWEMA</span></a>
+    <span style="color:var(--muted2)">© 2026 · Agence Web Marketing Africaine</span>
+    <div style="flex:1"></div>
+    <a href="index.html">Accueil</a>
+    <a href="tutoriel.html">Tutoriel</a>
+    <a href="liste-attente.html">Liste d'attente</a>
+    <a href="demande-acces.html">Accès API managé</a>
+    <a href="legal/terms.html">Conditions</a>
+    <a href="legal/privacy.html">Confidentialité</a>
+    <span class="lic">Logiciel libre sous licence <a href="LICENSE">AGPL-3.0</a> — forke-le, améliore-le, garde-le ouvert.</span>
+    <span class="src">Portfolio du projet — page statique, sans ressource externe ni script : elle s'affiche
+      à l'identique hors ligne. Sources citées : liens vers les fichiers du dépôt.</span>
+  </div>
+</footer>
+</body>
+</html>
